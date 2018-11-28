@@ -1,2 +1,11 @@
+### M103 ignored files
 **/.vagrant
 *.log
+
+## M220P ignored files
+
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class

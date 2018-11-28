@@ -57,3 +57,13 @@ db.createUser({
 ```bash
 mongoimport --port 27000 -u "m103-application-user" -p "m103-application-pass" --authenticationDatabase "admin" --db=applicationData --collection=products
 ```
+
+## M220P: MongoDB for Python Developers
+Diretório M220P
+
+## Requisitos:
+
+* Python 3
+* mongoDB
+* Flask
+* React
