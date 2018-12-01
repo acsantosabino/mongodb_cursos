@@ -58,6 +58,36 @@ db.createUser({
 mongoimport --port 27000 -u "m103-application-user" -p "m103-application-pass" --authenticationDatabase "admin" --db=applicationData --collection=products
 ```
 
+### Chapter 2: Replication
+
+####Lab1 - Initiate a Replica Set Locally
+
+```bash
+# Cria diretórios dos dbs e inicia cada um
+mkdir -p /var/mongodb/db/{1,2,3}
+mongod -f /shared/mongod-repl-1.conf
+mongod -f /shared/mongod-repl-2.conf
+mongod -f /shared/mongod-repl-3.conf
+
+# Conecta no primeiro para inicializar o ReplicatonSet e criar usuario admin
+mongo admin --port 27001
+rs.initiate()
+use admin
+db.createUser({
+  user: "m103-admin",
+  pwd: "m103-pass",
+  roles: [
+          {role: "root", db: "admin"}
+        ]
+})
+
+# Conecta com usuario para configurar o ReplicatonSet
+mongo --host "m103-repl/192.168.103.100:27001" -u "m103-admin" -p "m103-pass" --authenticationDatabase "admin"
+rs.status()
+rs.add("192.168.103.100:27002")
+rs.add("192.168.103.100:27003")
+```
+
 ## M220P: MongoDB for Python Developers
 Diretório M220P
 
