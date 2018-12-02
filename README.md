@@ -60,7 +60,7 @@ mongoimport --port 27000 -u "m103-application-user" -p "m103-application-pass" -
 
 ### Chapter 2: Replication
 
-####Lab1 - Initiate a Replica Set Locally
+#### Lab1 - Initiate a Replica Set Locally
 
 ```bash
 # Cria diretórios dos dbs e inicia cada um
@@ -86,6 +86,13 @@ mongo --host "m103-repl/192.168.103.100:27001" -u "m103-admin" -p "m103-pass" --
 rs.status()
 rs.add("192.168.103.100:27002")
 rs.add("192.168.103.100:27003")
+```
+
+#### Lab2 - Remove and Re-Add a Node
+
+```bash
+rs.remove("192.168.103.100:27003")
+rs.add("m103:27003")
 ```
 
 ## M220P: MongoDB for Python Developers
