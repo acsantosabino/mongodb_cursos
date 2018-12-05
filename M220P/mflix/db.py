@@ -407,6 +407,9 @@ def add_user(name, email, hashedpw):
             raise DuplicateKeyError('error')
         # TODO: Durable Writes
         # Use a more durable Write Concern for this operation.
+        w  = WriteConcern(w="majority")
+        while (not db.users.with_options(write_concern=w)) :
+            pass
         db.users.insert_one(user)
         return {"success": True}
     except DuplicateKeyError:
