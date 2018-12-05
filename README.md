@@ -91,8 +91,47 @@ rs.add("192.168.103.100:27003")
 #### Lab2 - Remove and Re-Add a Node
 
 ```bash
+mongo --host "m103-repl/192.168.103.100:27001" -u "m103-admin" -p "m103-pass" --authenticationDatabase "admin"
+rs.status()
 rs.remove("192.168.103.100:27003")
 rs.add("m103:27003")
+```
+
+##### Lab3 - Writes with Failovers
+
+```bash
+mongo --host "m103:27003" -u "m103-admin" -p "m103-pass" --authenticationDatabase "admin"
+use admin
+db.shutdownServer()
+mongo --host "m103-repl/192.168.103.100:27001" -u "m103-admin" -p "m103-pass" --authenticationDatabase "admin"
+rs.status()
+use testDatabase
+db.new_data.insert({"m103": "very fun"},
+ { writeConcern: { w: 3, wtimeout: 1000 }})
+```
+
+#### Lab4 - Read Concern and Read Preferences
+
+```bash
+mongoimport --drop \
+--host m103-repl/192.168.103.100:27002,192.168.103.100:27001,192.168.103.100:27003 \
+-u "m103-admin" -p "m103-pass" --authenticationDatabase "admin" \
+--db applicationData --collection products /dataset/products.json
+
+mongo --host "192.168.103.100:27001" -u "m103-admin" -p "m103-pass" --authenticationDatabase "admin"
+use admin
+db.shutdownServer()
+mongo --host "192.168.103.100:27003" -u "m103-admin" -p "m103-pass" --authenticationDatabase "admin"
+use admin
+db.shutdownServer()
+
+use applicationData
+rs.slaveOk()
+db.products.find().readPref("primary") #Error
+db.products.find().readPref("secondary")
+db.products.find().readPref("primaryPreferred")
+db.products.find().readPref("secondaryPreferred")
+db.products.find().readPref("nearest")
 ```
 
 ## M220P: MongoDB for Python Developers
